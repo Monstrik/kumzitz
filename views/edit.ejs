@@ -1,0 +1,43 @@
+<html>
+  <head>
+    <title>Kumzitz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/css/styles.css">
+  </head>
+  <body>
+    <h1>Edit Song</h1>
+
+    <form method="POST" action="/edit/<%= song.id %>">
+
+    <input
+      name="title"
+      placeholder="Song title"
+      value="<%= song.title %>"
+      required
+    />
+
+    <textarea
+      name="chords"
+      rows="10"
+      placeholder="Chords"
+      required
+    ><%= song.chords %></textarea>
+
+    <input
+      name="video_url"
+      placeholder="YouTube URL"
+      value="<%= song.video_url || '' %>"
+    />
+
+
+      <button type="submit">
+        Update Song
+      </button>
+
+    </form>
+
+    <p>
+      <a href="/">← Back</a>
+    </p>
+  </body>
+</html>

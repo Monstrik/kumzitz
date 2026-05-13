@@ -56,6 +56,52 @@ app.post("/add-song", async (req, res) => {
     res.redirect("/");
 });
 
+app.get("/edit/:id", async (req, res) => {
+    const { id } = req.params;
+    const { data: song, error } = await supabase
+        .from("songs")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+    if (error) {
+        return res.send(error.message);
+    }
+
+    res.render('edit', { song });
+});
+
+app.post("/edit/:id", async (req, res) => {
+    const { id } = req.params;
+    const { title, chords, video_url } = req.body;
+
+    const { error } = await supabase
+        .from("songs")
+        .update({ title, chords, video_url })
+        .eq("id", id);
+
+    if (error) {
+        return res.send(error.message);
+    }
+
+    res.redirect("/");
+});
+
+app.post("/delete/:id", async (req, res) => {
+    const { id } = req.params;
+
+    const { error } = await supabase
+        .from("songs")
+        .delete()
+        .eq("id", id);
+
+    if (error) {
+        return res.send(error.message);
+    }
+
+    res.redirect("/");
+});
+
 app.listen(PORT, () => {
     console.log(`Running on http://localhost:${PORT}`);
 });
