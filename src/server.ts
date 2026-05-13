@@ -33,6 +33,7 @@ app.get("/", async (req, res) => {
 
     res.render('index', { songs });
 });
+
 app.get("/admin", (req, res) => {
     res.render('admin');
 });
