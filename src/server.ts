@@ -70,6 +70,13 @@ function renderPage(content: string) {
             border-radius: 14px;
             margin-bottom: 20px;
           }
+          .song-text {
+              white-space: pre-wrap;
+              font-size: 24px;
+              line-height: 1.8;
+              direction: auto;
+              unicode-bidi: plaintext;
+            }
 
           pre {
             color: #7CFFB2;
@@ -121,8 +128,9 @@ app.get("/", async (req, res) => {
     const songsHtml = songs.map(song => `
     <div class="song">
       <h2>${song.title}</h2>
-
-      <pre>${song.chords}</pre>
+        <div class="song-text">
+        ${song.chords}
+        </div>
 
       ${
         song.video_url
