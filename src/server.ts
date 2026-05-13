@@ -1,4 +1,15 @@
+import dotenv from "dotenv";
 import express from "express";
+import fs from "fs";
+import path from "path";
+import { createClient } from "@supabase/supabase-js";
+
+dotenv.config();
+
+const supabase = createClient(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_KEY!
+);
 
 const app = express();
 const PORT = 3000;
@@ -11,16 +22,26 @@ type Song = {
     chords: string;
 };
 
-const songs: Song[] = [
-    {
-        title: "Wonderwall",
-        artist: "Oasis",
-        chords: `
-Em     G       D       A
-Today is gonna be the day
-`
-    }
-];
+const songsFilePath = path.join(
+    process.cwd(),
+    "src/data/songs.json"
+);
+
+function loadSongs(): Song[] {
+    const data = fs.readFileSync(
+        songsFilePath,
+        "utf-8"
+    );
+
+    return JSON.parse(data);
+}
+
+function saveSongs(songs: Song[]) {
+    fs.writeFileSync(
+        songsFilePath,
+        JSON.stringify(songs, null, 2)
+    );
+}
 
 function renderPage(content: string) {
     return `
@@ -43,10 +64,6 @@ function renderPage(content: string) {
             margin: auto;
           }
 
-          h1 {
-            margin-bottom: 30px;
-          }
-
           .song {
             background: #222;
             padding: 16px;
@@ -57,7 +74,6 @@ function renderPage(content: string) {
           pre {
             color: #7CFFB2;
             white-space: pre-wrap;
-            overflow-x: auto;
           }
 
           input, textarea {
@@ -76,7 +92,6 @@ function renderPage(content: string) {
             border-radius: 10px;
             background: #4CAF50;
             color: white;
-            font-size: 16px;
           }
 
           a {
@@ -92,12 +107,29 @@ function renderPage(content: string) {
   `;
 }
 
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
+
+    const { data: songs, error } = await supabase
+        .from("songs")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+    if (error) {
+        return res.send(error.message);
+    }
+
     const songsHtml = songs.map(song => `
     <div class="song">
       <h2>${song.title}</h2>
-      <p>${song.artist}</p>
+
       <pre>${song.chords}</pre>
+
+      ${
+        song.video_url
+            ? `<p><a href="${song.video_url}" target="_blank">Video</a></p>`
+            : ""
+    }
+
     </div>
   `).join("");
 
@@ -111,30 +143,30 @@ app.get("/", (req, res) => {
     ${songsHtml}
   `));
 });
-
 app.get("/admin", (req, res) => {
     res.send(renderPage(`
-    <h1>➕ Add Song</h1>
+    <h1>Add Song</h1>
 
     <form method="POST" action="/add-song">
 
-      <input
-        name="title"
-        placeholder="Song title"
-        required
-      />
+    <input
+  name="title"
+  placeholder="Song title"
+  required
+/>
 
-      <input
-        name="artist"
-        placeholder="Artist"
-      />
+<textarea
+  name="chords"
+  rows="10"
+  placeholder="Chords"
+  required
+></textarea>
 
-      <textarea
-        name="chords"
-        rows="10"
-        placeholder="Paste chords here"
-        required
-      ></textarea>
+<input
+  name="video_url"
+  placeholder="YouTube URL"
+/>
+    
 
       <button type="submit">
         Save Song
@@ -148,14 +180,21 @@ app.get("/admin", (req, res) => {
   `));
 });
 
-app.post("/add-song", (req, res) => {
-    const { title, artist, chords } = req.body;
+app.post("/add-song", async (req, res) => {
 
-    songs.unshift({
-        title,
-        artist,
-        chords
-    });
+    const { title, chords, video_url } = req.body;
+
+    const { error } = await supabase
+        .from("songs")
+        .insert({
+            title,
+            chords,
+            video_url
+        });
+
+    if (error) {
+        return res.send(error.message);
+    }
 
     res.redirect("/");
 });
