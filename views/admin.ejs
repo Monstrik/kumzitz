@@ -1,0 +1,41 @@
+<html>
+  <head>
+    <title>Kumzitz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/css/styles.css">
+  </head>
+  <body>
+    <h1>Add Song</h1>
+
+    <form method="POST" action="/add-song">
+
+    <input
+      name="title"
+      placeholder="Song title"
+      required
+    />
+
+    <textarea
+      name="chords"
+      rows="10"
+      placeholder="Chords"
+      required
+    ></textarea>
+
+    <input
+      name="video_url"
+      placeholder="YouTube URL"
+    />
+
+
+      <button type="submit">
+        Save Song
+      </button>
+
+    </form>
+
+    <p>
+      <a href="/">← Back</a>
+    </p>
+  </body>
+</html>

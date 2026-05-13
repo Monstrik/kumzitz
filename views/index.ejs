@@ -1,0 +1,32 @@
+<html>
+  <head>
+    <title>Kumzitz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/css/styles.css">
+  </head>
+  <body>
+    <h1>🎸 Kumzitz</h1>
+
+    <p>
+      <a href="/admin">Admin Panel</a>
+    </p>
+
+    <% songs.forEach(song => { %>
+    <div class="song">
+      <h2><%= song.title %></h2>
+        <div class="song-text">
+        <%= song.chords %>
+        </div>
+
+      <%
+        if (song.video_url) {
+      %>
+        <p><a href="<%= song.video_url %>" target="_blank">Video</a></p>
+      <%
+        }
+      %>
+
+    </div>
+    <% }) %>
+  </body>
+</html>

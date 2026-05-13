@@ -1,0 +1,49 @@
+body {
+  font-family: Arial;
+  background: #111;
+  color: white;
+  padding: 20px;
+  max-width: 700px;
+  margin: auto;
+}
+
+.song {
+  background: #222;
+  padding: 16px;
+  border-radius: 14px;
+  margin-bottom: 20px;
+}
+.song-text {
+    white-space: pre-wrap;
+    font-size: 24px;
+    line-height: 1.8;
+    direction: auto;
+    unicode-bidi: plaintext;
+  }
+
+pre {
+  color: #7CFFB2;
+  white-space: pre-wrap;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  border: none;
+  background: #222;
+  color: white;
+}
+
+button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  background: #4CAF50;
+  color: white;
+}
+
+a {
+  color: #7CFFB2;
+}
